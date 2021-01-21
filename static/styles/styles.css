@@ -1,0 +1,152 @@
+:root {
+    --name-green:rgb(67, 139, 95);
+    --th-green:rgb(94, 163, 121);
+    --nav-colour:rgb(0, 0, 0);
+    --hover-color:rgb(108, 214, 149);
+}
+
+html {
+    background-color: rgb(255, 255, 255);
+    font-family: sans-serif;
+}
+
+body {
+    width: 800px;
+    margin: auto;
+}
+
+h1 {
+
+    color: white; 
+    display: inline;  
+    background-color: rgb(105, 184, 253);
+    padding-top: .75em;
+    padding-bottom:.75em;
+    margin:0;
+}
+
+header {   
+    z-index: 1;
+    text-align: center;
+    box-sizing: border-box;
+    position: fixed;
+    width:800px;
+    display: grid;
+    grid-template-columns: auto auto;
+    margin-top:4.5em;
+    /* padding: 2em 1em 1.5em 1em; */
+    /* background-color: var(--nav-colour); */
+    border-bottom: solid .25em white;
+    text-transform: uppercase;
+    /* width: 100%; */
+}
+
+
+
+
+nav {
+    display: grid;
+    grid-template-columns: auto auto;
+    background-color: var(--nav-colour);
+    /* grid-template-columns: repeat(2, 1fr); */  
+}
+
+nav:first-child {
+    width: 800px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+} 
+
+a {
+    padding-top: 2em;
+    color:white;
+    text-decoration: none;
+    border-left: 3px solid rgb(68, 68, 68);
+}
+
+nav:first-child a {
+    padding-top: 2em;
+    padding-bottom:1.5em;
+}
+
+a:hover {
+    background-color:rgb(136, 136, 136);
+    text-decoration: underline;
+    text-underline-position: under;
+}
+
+table {
+    margin-top:-5em;
+    min-width: 100% !important;
+}
+
+
+
+th {
+    padding-top:7em;
+    padding-bottom:1em;
+    background-color: var(--name-green);
+    color:white;
+    position: sticky;
+    top: 0; 
+    box-shadow: 0 4px 4px -1px rgba(0, 0, 0, 0.4);
+    
+}
+
+th:not(:first-child) {
+    background-color: var(--th-green);
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+
+
+tr:hover{
+    color:white;
+    background-color:var(--hover-color) !important;
+    /* background-color: var(--hover-colour) !important; */
+}
+
+
+tr:nth-child(1n) {
+    background-color: white;
+}
+
+tr:nth-child(2n) {
+    background-color: rgb(209, 217, 224);
+}
+
+td {
+    box-sizing: border-box;
+    padding-left: 1em;
+    padding: .5em 0 .5em 1em;
+    /* border: .1em solid white; */
+
+}
+
+tbody tr:first-child td {
+    padding-top: 5.75em;
+}
+
+
+
+
+/* th:nth-child(2n) {
+    background-color:red;
+    width: 4em;
+}
+
+th:nth-child(3n) {
+    background-color:red;
+    width: 4em;
+}
+
+th:nth-child(4n) {
+    background-color:red;
+    width: 10em;
+}
+
+th:nth-child(5n) {
+    background-color:red;
+    width: 10em;
+} */

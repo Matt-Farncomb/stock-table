@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block body %}
+    <header>
+        {% if current_product is defined %}
+            <h1>{{ current_product }}</h1>
+        {% endif %}
+        <nav>
+            {% for product in products_required %}
+                <a href="{{ url_for('products_table', category=product) }}">{{ product }}</a>
+            {% endfor %}
+        </nav>
+    </header>
+    <table>
+        <thead>
+            <tr>    
+                {% for heading in headings %}
+                    <th>{{ heading }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        
+        <tbody>
+        {% if rows|length %}
+        {% else %}
+            <tr><td></td></tr>
+            
+        {% endif %} 
+        {% for row in rows %}
+        <tr>
+            {% for value in row %}
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+                
+        </tbody>
+    </table>
+    <div>
+        {{ message }}
+    </div>
+    
+{% endblock %}
