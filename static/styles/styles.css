@@ -15,15 +15,7 @@ body {
     margin: auto;
 }
 
-h1 {
 
-    color: white; 
-    display: inline;  
-    background-color: rgb(105, 184, 253);
-    padding-top: .75em;
-    padding-bottom:.75em;
-    margin:0;
-}
 
 header {   
     z-index: 1;
@@ -41,38 +33,47 @@ header {
     /* width: 100%; */
 }
 
+header h1 {
+
+    color: white; 
+    display: inline;  
+    background-color: rgb(105, 184, 253);
+    padding-top: .75em;
+    padding-bottom:.75em;
+    margin:0;
+}
 
 
 
-nav {
+header nav {
     display: grid;
     grid-template-columns: auto auto;
     background-color: var(--nav-colour);
     /* grid-template-columns: repeat(2, 1fr); */  
 }
 
-nav:first-child {
+header nav:first-child {
     width: 800px;
     display: grid;
     grid-template-columns: auto auto auto;
 } 
 
-a {
+header nav a {
     padding-top: 2em;
     color:white;
     text-decoration: none;
     border-left: 3px solid rgb(68, 68, 68);
 }
 
-nav:first-child a {
+header nav:first-child a {
     padding-top: 2em;
     padding-bottom:1.5em;
 }
 
-a:hover {
+header nav a:hover {
     background-color:rgb(136, 136, 136);
     text-decoration: underline;
-    text-underline-position: under;
+    text-underline-position: under; 
 }
 
 table {
@@ -128,25 +129,36 @@ tbody tr:first-child td {
     padding-top: 5.75em;
 }
 
-
-
-
-/* th:nth-child(2n) {
-    background-color:red;
-    width: 4em;
+#error-404 h1 {
+    font-size: 6em;
+    margin-bottom: .25em;
 }
 
-th:nth-child(3n) {
-    background-color:red;
-    width: 4em;
+#error-404 p {
+    margin-top:2.5em;
+    margin-bottom: 2em;
 }
 
-th:nth-child(4n) {
-    background-color:red;
-    width: 10em;
+
+#error-404 nav a {
+    text-decoration: none;
+    color:black;
+    text-transform: uppercase;
 }
 
-th:nth-child(5n) {
-    background-color:red;
-    width: 10em;
-} */
+#error-404 nav a:hover {
+    background-color: rgb(196, 220, 228);
+}
+
+#error-404 nav a {
+    /* margin-right: 1em; */
+    padding-right: 1em;
+    
+    padding: .45em 2em .45em 2em;
+    margin-left:-.3em;
+    box-sizing: border-box;
+}
+
+#error-404 nav a:not(:last-child) {
+    border-right:.15em solid rgb(226, 218, 218);
+}
