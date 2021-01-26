@@ -1,5 +1,19 @@
 {% extends "base.html" %}
+
+{%block head %}
+    <meta http-equiv="refresh" content="{{ refresh_interval.seconds }}">
+{% endblock %}
 {% block body %}
+    <div id="refresh-notification" class="noscript">
+        <p class="hidden">
+            <!-- The inventory will up update in approximately minutes. -->
+            Minutes remaining until inventory update: <span>{{ refresh_interval.minutes }}</span>
+        </p>
+        <noscript>
+            Your browser does not support JavaScript! 
+            Therefore, this window will refresh every {{ refresh_interval.minutes }} minutes to an get updated inventory
+        </noscript>
+    </div>
     <header>
         {% if current_product is defined %}
             <h1>{{ current_product }}</h1>
@@ -9,7 +23,7 @@
                 <a href="{{ url_for('products_table', category=product) }}">{{ product }}</a>
             {% endfor %}
         </nav>
-    </header>
+    </header>   
     <table>
         <thead>
             <tr>    
@@ -17,26 +31,24 @@
                     <th>{{ heading }}</th>
                 {% endfor %}
             </tr>
-        </thead>
-        
+        </thead>   
         <tbody>
-        {% if rows|length %}
-        {% else %}
-            <tr><td></td></tr>
-            
-        {% endif %} 
-        {% for row in rows %}
-        <tr>
-            {% for value in row %}
-                <td>{{ value }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-                
+            {% if rows|length %}
+            {% else %}
+                <tr><td></td></tr>
+            {% endif %} 
+            {% for row in rows %}
+            <tr>
+                {% for value in row %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}        
         </tbody>
     </table>
     <div>
         {{ message }}
     </div>
-    
+{% endblock %}
+{% block footer %}
 {% endblock %}

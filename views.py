@@ -2,7 +2,7 @@ from new_main import app
 # from globals import products_required, table_headings
 import config
 from flask import render_template, jsonify
-from database import get_info_for_table, check_if_db_updated
+from database import get_info_for_table, check_if_db_updated, last_updated
 
 @app.route('/api')
 def api():
@@ -22,13 +22,21 @@ def products_table(category=None):
 
     rows = get_info_for_table(category)
 
+    
+    refresh = last_updated()
+
     products_remaining = [e for e in config.products_required if e != category]
 
     context = {
         "current_product": category,
         "products_required": products_remaining,
         "rows":rows,
-        "headings":[ table.upper() for table in config.table_headings ]
+        "headings":[ table.upper() for table in config.table_headings ],
+        "refresh_interval": {
+            "seconds": refresh["seconds"],
+            "minutes": refresh["minutes"],
+            "last_updated": refresh["last_updated"]
+        }
     } 
 
     return render_template("table.html", **context)
@@ -47,7 +55,8 @@ def product_not_found(category=None):
         "message":message,
         "missing_category":category,
         "products_required": config.products_required,
-        "headings": [ table.upper() for table in config.table_headings ]
+        "headings": [ table.upper() for table in config.table_headings ],
+        "refresh_interval":{}
     }
 
     return render_template("table.html", **context)

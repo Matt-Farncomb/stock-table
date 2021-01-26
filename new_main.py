@@ -8,9 +8,9 @@ from scheduler import begin_scheduler
 # if __name__ == "__main__":
 print("you should see this only once")
 app = Flask(__name__)
-# initial_db_setup()
+initial_db_setup()
 
-# begin_scheduler()
+begin_scheduler()
 
 
 import views

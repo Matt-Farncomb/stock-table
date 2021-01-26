@@ -78,39 +78,7 @@ def get_availability(session):
     return spawn_threads(config.manufacturers, session, get_all_stock)
 
 
-# def get_stock_count2(manufacturers, session):
-#     results = []    
-
-#     def get_all_stock(manufacturer):
-#         stock_count = get_stock_count(manufacturer, session)
-#         for x in stock_count:
-#             results.append((parseXML(x["DATAPAYLOAD"]), x["id"]))
-
-
-#     threads = [ run_thread(get_all_stock, x) for x in manufacturers ]
-
-#     # We now pause execution on the main thread by 'joining' all of our started threads.
-#     # This ensures that each has finished processing the urls.
-#     for thread in threads:
-#         thread.join()
-
-#     return results
-    
-# def get_products2(products_required, manufacturers, session):
-    
-#     results = []
-    
-#     def get_all_products(products_required):
-#         products = get_products(products_required, session)
-#         for e in products:
-#             manufacturers.add(e["manufacturer"])
-#             results.append( (e["id"].upper(), e["type"], e["name"], e["color"][0],
-#                 e["price"], e["manufacturer"]) )
-#         # results.append(products)
-    
-#     threads = [ run_thread(get_all_products, x) for x in products_required ]
-
-#     for thread in threads:
-#         thread.join()
-
-#     return results
+# def append_to_json(row):
+#     json_row = jsonify(row)
+#     refresh_interval = { "refresh_interval": config.refresh_interval }
+#     x = json_row.update(refresh_interval)

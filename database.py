@@ -2,17 +2,54 @@ import sqlite3
 from helpers import get_products, get_stock_count, parseXML, get_cateogry, get_availability
 # from globals import products_required, manufacturers
 import time
-
+import datetime
 import requests
+import config
+from flask import jsonify
+import json
+import math
 
 
 def check_if_db_updated():
     con = sqlite3.connect('database.db')
     cur = con.cursor()
-    cur.execute("SELECT updating FROM TABLES")  
+    cur.execute("SELECT updated_at FROM TABLES")  
     row = cur.fetchone()
     return row
 
+def last_updated():
+    con = sqlite3.connect('database.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("SELECT updated_at, next_update_due FROM TABLES")  
+    row = cur.fetchone()
+
+    # updated_at = row["updated_at"]
+    # updated_at_obj = datetime.datetime.strptime(updated_at, "%Y-%m-%d %H:%M:%S.%f")
+
+    next_update_due = row["next_update_due"]
+    next_update_due_obj = datetime.datetime.strptime(next_update_due, "%Y-%m-%d %H:%M:%S.%f")
+
+    diff = next_update_due_obj - datetime.datetime.now()
+    print(diff)
+    total_minutes = math.ceil(diff.seconds/60)
+    total_seconds = diff.seconds
+    result = { "minutes": total_minutes, "seconds":total_seconds, "last_updated":row["updated_at"] }
+    # date = row[0]
+    # new_date_time = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
+    # print(new_date_time)
+    # new_date_time = new_date_time.replace(minute=new_date_time.minute+5)
+    # print(new_date_time)
+
+
+    # list_row = list(row)
+    # list_row.append(config.refresh_interval)
+    # tuple_row = tuple(list_row)
+    # print(f" row: {tuple_row}")
+    # print(f" type: {type(tuple_row)}")
+    # json_row = jsonify(tuple_row)
+   
+    return result
 
 def create_table(con, name):
     # print("before create")
@@ -42,16 +79,27 @@ def initial_db_setup():
     cur.execute('''
         CREATE TABLE tables (
             table_name TEXT,
-            updating TEXT
+            updating TEXT,
+            updated_at TEXT,
+            next_update_due
             )
             ''')
     print("tables table created")
 
+    current_time = datetime.datetime.now()
+    print(current_time.minute+config.refresh_interval_minutes)
+    td = datetime.timedelta(minutes=+config.refresh_interval_minutes)
+    next_update = current_time + td
+    print(next_update)
+    # next_update = current_time.replace(
+    #     minute=current_time.minute+config.refresh_interval_minutes
+    #     )
+
     cur.execute('''
     INSERT INTO tables 
-        (table_name, updating)
-        VALUES (?, ?)''', 
-        ("stock", "true") 
+        (table_name, updating, updated_at, next_update_due)
+        VALUES (?, ?, ?, ?)''', 
+        ("stock", "true", current_time, next_update) 
     )
     print("tables table updated")
 
@@ -135,8 +183,19 @@ def update_stock_count(table_name, session):
         WHERE id = ?
         ''', xml_data) 
 
+    current_time = datetime.datetime.now()
+    td = datetime.timedelta(minutes=+config.refresh_interval_minutes)
+    next_update = current_time + td
+
+    # next_update = current_time.replace(
+    #     minute=current_time.minute+config.refresh_interval_minutes)
+
     cur.execute(f'''UPDATE "tables"
-        SET updating = "false"
+        SET 
+        updating = "false",
+        updated_at = "{current_time}",
+        next_update_due = "{next_update}"
+
         WHERE table_name = "stock"
         ''')
 

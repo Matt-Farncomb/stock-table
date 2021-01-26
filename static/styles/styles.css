@@ -25,7 +25,7 @@ header {
     width:800px;
     display: grid;
     grid-template-columns: auto auto;
-    margin-top:4.5em;
+    margin-top:6.5em;
     /* padding: 2em 1em 1.5em 1em; */
     /* background-color: var(--nav-colour); */
     border-bottom: solid .25em white;
@@ -84,7 +84,7 @@ table {
 
 
 th {
-    padding-top:7em;
+    padding-top:9em;
     padding-bottom:1em;
     background-color: var(--name-green);
     color:white;
@@ -161,4 +161,40 @@ tbody tr:first-child td {
 
 #error-404 nav a:not(:last-child) {
     border-right:.15em solid rgb(226, 218, 218);
+}
+
+.no-js {}
+
+#refresh-notification {
+    font-family: sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index:2;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    /* padding: 5px 0; */
+}
+
+/* #refresh-notification p {
+    background-color: rgb(86, 112, 199);
+} */
+
+.refresh-notification {
+    background-color: rgb(86, 112, 199);
+}
+
+#refresh-notification p {
+    margin: .5em 0 .5em 0 !important;
+}
+
+.noscript {
+    background-color: rgb(240, 75, 75);
+    padding: .5em 0 .5em 0 !important;
+}
+
+.hidden {
+    display: none;
 }
