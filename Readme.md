@@ -1,9 +1,9 @@
 # Inventory Tracker
-A simple site to view inventory information for a fictional warehouse./
-The HTML diplsays  a table to display this data in a logical way./
+A simple site to view inventory information for a fictional warehouse.
+The HTML diplsays a table with this data.
 The backend retrieves inventory information from a poorly designed API and then joins the data
-in a logical way./
-This retriveal is automated to take place every five minutes to coincide with the API,/
+in a logical way.
+This retriveal is automated to take place every five minutes to coincide with the API,
 which is also updated at five minute intervals.
 
 ## Technologies
