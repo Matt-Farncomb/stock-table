@@ -1,4 +1,4 @@
-from new_main import app
+from main import app
 # from globals import products_required, table_headings
 import config
 from flask import render_template, jsonify
@@ -10,27 +10,12 @@ def api():
     return(jsonify(db_status))
 
 @app.route('/')
-def home():
-    return products_table()
-
 @app.route('/<category>')
-def products_table(category=None):   
-    if category == None:
-        return product_not_found()
-    if category not in config.products_required:
-        return product_not_found(category)
+def products_table(category=None):
 
-    rows = get_info_for_table(category)
-
-    
     refresh = last_updated()
 
-    products_remaining = [e for e in config.products_required if e != category]
-
     context = {
-        "current_product": category,
-        "products_required": products_remaining,
-        "rows":rows,
         "headings":[ table.upper() for table in config.table_headings ],
         "refresh_interval": {
             "seconds": refresh["seconds"],
@@ -38,27 +23,22 @@ def products_table(category=None):
             "last_updated": refresh["last_updated"]
         }
     } 
-
-    return render_template("table.html", **context)
-
-
-def product_not_found(category=None):
-
-    message = "Please select an option from above."
-
-    if category == None:
-        message = f"No product selected. {message}"
+    # valid category
+    if category in config.products_required:
+        products_remaining = [e for e in config.products_required if e != category]
+        context["current_product"] = category
+        context["products_required"] = products_remaining
+        context["rows"] = get_info_for_table(category)
+    # not a valid category
     else:
-        message = f"A product called '{category}' could not be found.  {message}"
-
-    context = {
-        "message":message,
-        "missing_category":category,
-        "products_required": config.products_required,
-        "headings": [ table.upper() for table in config.table_headings ],
-        "refresh_interval":{}
-    }
-
+        message = "Please select an option from above."
+        if category == None:
+            message = f"No product selected. {message}"
+        elif category not in config.products_required:
+            message = f"A product called '{category}' could not be found.  {message}"
+        context["message"] = message
+        context["products_required"] = config.products_required
+    
     return render_template("table.html", **context)
 
 

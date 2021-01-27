@@ -38,7 +38,7 @@ header h1 {
     color: white; 
     display: inline;  
     background-color: rgb(105, 184, 253);
-    padding-top: .75em;
+    padding-top: 1em;
     padding-bottom:.75em;
     margin:0;
 }
@@ -59,7 +59,7 @@ header nav:first-child {
 } 
 
 header nav a {
-    padding-top: 2em;
+    padding-top: 2.5em;
     color:white;
     text-decoration: none;
     border-left: 3px solid rgb(68, 68, 68);
@@ -175,6 +175,9 @@ tbody tr:first-child td {
     text-align: center;
     font-weight: bold;
     color: #fff;
+    height: 2em;
+    background-color:rgb(40, 40, 41);
+    /* max-height: fit-content; */
     /* padding: 5px 0; */
 }
 
@@ -182,17 +185,24 @@ tbody tr:first-child td {
     background-color: rgb(86, 112, 199);
 } */
 
-.refresh-notification {
-    background-color: rgb(86, 112, 199);
-}
+
 
 #refresh-notification p {
     margin: .5em 0 .5em 0 !important;
 }
 
-.noscript {
+#noscript {
     background-color: rgb(240, 75, 75);
     padding: .5em 0 .5em 0 !important;
+    position: fixed;
+    width: 100%;
+    top:0;
+    left: 0;
+    z-index: 2;
+    color: #fff;
+    text-align: center;
+    font-family: sans-serif;
+    font-weight: bold;
 }
 
 .hidden {

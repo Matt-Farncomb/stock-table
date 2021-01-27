@@ -4,16 +4,17 @@
     <meta http-equiv="refresh" content="{{ refresh_interval.seconds }}">
 {% endblock %}
 {% block body %}
-    <div id="refresh-notification" class="noscript">
+    <div id="refresh-notification">
         <p class="hidden">
-            <!-- The inventory will up update in approximately minutes. -->
             Minutes remaining until inventory update: <span>{{ refresh_interval.minutes }}</span>
         </p>
-        <noscript>
+    </div>
+    <noscript>
+        <div id="noscript">
             Your browser does not support JavaScript! 
             Therefore, this window will refresh every {{ refresh_interval.minutes }} minutes to an get updated inventory
-        </noscript>
-    </div>
+        </div>
+    </noscript>
     <header>
         {% if current_product is defined %}
             <h1>{{ current_product }}</h1>
