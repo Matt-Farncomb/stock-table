@@ -1,10 +1,8 @@
 import xml.etree.ElementTree as et
 import json
-import requests
-import time
 import threading
-# from config import products_required, manufacturers
 import config
+import datetime
 
 def parseXML(xml):
     root = et.fromstring(xml)
@@ -77,8 +75,9 @@ def get_availability(session):
     
     return spawn_threads(config.manufacturers, session, get_all_stock)
 
-
-# def append_to_json(row):
-#     json_row = jsonify(row)
-#     refresh_interval = { "refresh_interval": config.refresh_interval }
-#     x = json_row.update(refresh_interval)
+def next_update_time():
+    current_time = datetime.datetime.now()
+    td = datetime.timedelta(minutes=+config.refresh_interval_minutes)
+    next_update = current_time + td
+    update_dict = { "current_time":current_time, "next_update":next_update }
+    return update_dict

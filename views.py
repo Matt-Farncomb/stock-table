@@ -2,13 +2,17 @@ from main import app
 # from globals import products_required, table_headings
 import config
 from flask import render_template, jsonify
-from database import get_info_for_table, check_if_db_updated, last_updated
+from database import get_info_for_table, check_when_db_updated, last_updated
 
+
+# Return when db was last updated
 @app.route('/api')
 def api():
-    db_status = check_if_db_updated()
+    db_status = check_when_db_updated()
     return(jsonify(db_status))
 
+
+# Return a table containing all the inventory data of <category>
 @app.route('/')
 @app.route('/<category>')
 def products_table(category=None):
@@ -44,5 +48,4 @@ def products_table(category=None):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
     return render_template('404.html', products_required=config.products_required), 404
