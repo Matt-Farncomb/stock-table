@@ -1,22 +1,18 @@
 window.onload = () => {
     // will stop the refresh initiated by the HTML
     window.stop();
-
-    // Update counter at top of page to inform
-    // user when update is complete and
-    // the page will refresh.
-    startCountdown();
-
-    // When the DB is due to start updating,
-    // poll the server every 10 seconds to see
-    // if update is complete then refresh
-    // when update is complete.
+   
+    startCountdown(); 
     initiatePageRefresh();
-                    
+    fadeElementOnScroll("footer");               
 }
 
+ // When the DB is due to start updating,
+// poll the server every 10 seconds to see
+// if update is complete then refresh
+// when update is complete.
 function initiatePageRefresh() {
-
+    // refresh_interval comes from the server (is in table.html)
     const last_updated = Date.parse(refresh_interval.last_updated);
     const interval = 10000 // 10 seconds
 
@@ -25,7 +21,6 @@ function initiatePageRefresh() {
                 fetch("http://127.0.0.1:8000/api")
                 .then(response => response.json())
                 .then(dbdatus => {
-                    console.log(dbdatus)
                     const db_update = Date.parse(dbdatus[0]);
                     if (db_update > last_updated) { 
                         location.reload();
@@ -35,12 +30,15 @@ function initiatePageRefresh() {
     refresh_interval.seconds * 1000)
 }
 
+// Update counter at top of page to inform
+// user when update is complete and
+// the page will refresh.
 function startCountdown() {
 
     const refreshNotification = document.querySelector("#refresh-notification");
     const p = refreshNotification.querySelector("p");
     const refreshCountdown = p.querySelector("span");
-    // refresh_interval comes from the server (is in base.html)
+    // refresh_interval comes from the server (is in table.html)
     let displayedMinutes = refresh_interval.minutes;
     const interval = 60000 // 60 seconds
     p.classList.remove("hidden");
@@ -58,6 +56,20 @@ function startCountdown() {
 
 function millisecondsToSeconds(mil) {
     return Math.floor(mil / 1000);
+}
+
+// When user has scrolled past approxPageHeight, reveal/hide element.
+// NOTE: USe on elements with 'transparent' class
+function fadeElementOnScroll(element) {
+    const elementClasses = document.querySelector(element).classList;
+    const approxPageHeight = 700;
+    window.onscroll = () => {  
+        if (window.scrollY >= approxPageHeight) {
+            if (!elementClasses.contains("show")) elementClasses.add("show");       
+        } else {
+            if (elementClasses.contains("show")) elementClasses.remove("show");
+        }
+    }
 }
 
 

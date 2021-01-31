@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 
 {%block head %}
+    <script type="text/javascript" src= "{{ url_for('static',filename='scripts/scripts.js') }}" ></script>
     <meta http-equiv="refresh" content="{{ refresh_interval.seconds }}">
+    <script type="text/javascript">
+        const refresh_interval = {{ refresh_interval|tojson }} 
+     </script>
 {% endblock %}
 {% block body %}
+    <span id="top"></span>
     <div id="refresh-notification">
         <p class="hidden">
             Minutes remaining until inventory update: <span>{{ refresh_interval.minutes }}</span>
@@ -52,4 +57,7 @@
     </div>
 {% endblock %}
 {% block footer %}
+    {% if rows|length %}
+        <a href="#top">Back to Top</a>
+    {% endif %} 
 {% endblock %}

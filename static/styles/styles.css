@@ -1,21 +1,24 @@
 :root {
-    --name-green:rgb(67, 139, 95);
-    --th-green:rgb(94, 163, 121);
-    --nav-colour:rgb(0, 0, 0);
-    --hover-color:rgb(108, 214, 149);
+    --main-bg:white;
+    --heading-txt:white;
+    --name-col-th-bg:rgb(67, 139, 95);
+    --col-th-bg:rgb(94, 163, 121);
+    --nav-colour:black;
+    --table-row:rgb(209, 217, 224);
+    --refresh-notification-normal:rgb(40, 40, 41);
+    --refresh-notification-alert:rgb(240, 75, 75);  
 }
 
 html {
-    background-color: rgb(255, 255, 255);
+    background-color:var(--main-bg);
     font-family: sans-serif;
+    scroll-behavior: smooth;
 }
 
 body {
     width: 800px;
     margin: auto;
 }
-
-
 
 header {   
     z-index: 1;
@@ -26,18 +29,15 @@ header {
     display: grid;
     grid-template-columns: auto auto;
     margin-top:6.5em;
-    /* padding: 2em 1em 1.5em 1em; */
-    /* background-color: var(--nav-colour); */
-    border-bottom: solid .25em white;
+    border-bottom: solid .25em var(--main-bg);
     text-transform: uppercase;
-    /* width: 100%; */
 }
 
 header h1 {
 
-    color: white; 
+    color: var(--heading-txt);
     display: inline;  
-    background-color: rgb(105, 184, 253);
+    background-color: black;
     padding-top: 1em;
     padding-bottom:.75em;
     margin:0;
@@ -49,7 +49,6 @@ header nav {
     display: grid;
     grid-template-columns: auto auto;
     background-color: var(--nav-colour);
-    /* grid-template-columns: repeat(2, 1fr); */  
 }
 
 header nav:first-child {
@@ -59,10 +58,10 @@ header nav:first-child {
 } 
 
 header nav a {
-    padding-top: 2.5em;
-    color:white;
+    padding-top: 2.75em;
+    color:var(--heading-txt);
     text-decoration: none;
-    border-left: 3px solid rgb(68, 68, 68);
+    border-left: 3px solid var(--refresh-notification-normal);
 }
 
 header nav:first-child a {
@@ -71,7 +70,8 @@ header nav:first-child a {
 }
 
 header nav a:hover {
-    background-color:rgb(136, 136, 136);
+    background-color:rgb(32, 32, 32);
+    color:rgb(215, 215, 215);
     text-decoration: underline;
     text-underline-position: under; 
 }
@@ -81,53 +81,77 @@ table {
     min-width: 100% !important;
 }
 
-
-
 th {
     padding-top:9em;
     padding-bottom:1em;
-    background-color: var(--name-green);
-    color:white;
+    background-color: var(--name-col-th-bg);
+    color:var(--heading-txt);
     position: sticky;
     top: 0; 
-    box-shadow: 0 4px 4px -1px rgba(0, 0, 0, 0.4);
-    
+    box-shadow: 0 4px 4px -1px rgba(0, 0, 0, 0.4);   
 }
 
 th:not(:first-child) {
-    background-color: var(--th-green);
+    background-color: var(--col-th-bg);
     padding-left: 1em;
     padding-right: 1em;
 }
 
-
-
-tr:hover{
-    color:white;
-    background-color:var(--hover-color) !important;
-    /* background-color: var(--hover-colour) !important; */
-}
-
-
 tr:nth-child(1n) {
-    background-color: white;
+    background-color:var(--main-bg);
 }
 
 tr:nth-child(2n) {
-    background-color: rgb(209, 217, 224);
+    background-color: var(--table-row);
 }
 
 td {
     box-sizing: border-box;
     padding-left: 1em;
     padding: .5em 0 .5em 1em;
-    /* border: .1em solid white; */
-
 }
 
 tbody tr:first-child td {
     padding-top: 5.75em;
 }
+
+tbody tr:last-child td {
+    padding-bottom: 3.5em;
+}
+
+table + div {
+    margin-top:-3em
+}
+
+footer {
+    background-color:var(--main-bg);
+    position:fixed;
+    height:2em;
+    bottom:0;
+    left:0;
+    width: 100%;
+    text-align: center;
+    padding-top: 1em;    
+}
+
+
+footer a {
+    text-decoration: none;
+    color:black;
+    font-weight: bold;
+    
+}
+
+.makeTransparent {
+    opacity: 0;
+    /* adding/removing class 'show' will fade on/off footer */
+    transition: opacity .75s;
+}
+
+.show {
+    opacity: 0.75;
+}
+
 
 #error-404 h1 {
     font-size: 6em;
@@ -160,7 +184,7 @@ tbody tr:first-child td {
 }
 
 #error-404 nav a:not(:last-child) {
-    border-right:.15em solid rgb(226, 218, 218);
+    border-right:.15em solid var(--table-row);
 }
 
 .no-js {}
@@ -176,14 +200,8 @@ tbody tr:first-child td {
     font-weight: bold;
     color: #fff;
     height: 2em;
-    background-color:rgb(40, 40, 41);
-    /* max-height: fit-content; */
-    /* padding: 5px 0; */
+    background-color:var(--refresh-notification-normal);
 }
-
-/* #refresh-notification p {
-    background-color: rgb(86, 112, 199);
-} */
 
 
 
@@ -192,7 +210,7 @@ tbody tr:first-child td {
 }
 
 #noscript {
-    background-color: rgb(240, 75, 75);
+    background-color: var(--refresh-notification-alert);
     padding: .5em 0 .5em 0 !important;
     position: fixed;
     width: 100%;
@@ -208,3 +226,4 @@ tbody tr:first-child td {
 .hidden {
     display: none;
 }
+

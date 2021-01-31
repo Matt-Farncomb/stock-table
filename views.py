@@ -28,11 +28,14 @@ def products_table(category=None):
         }
     } 
     # valid category
+    rows = get_info_for_table(category)
+    if not rows:
+         context["message"] = "This product category is not currently available"
     if category in config.products_required:
         products_remaining = [e for e in config.products_required if e != category]
         context["current_product"] = category
         context["products_required"] = products_remaining
-        context["rows"] = get_info_for_table(category)
+        context["rows"] = rows
     # not a valid category
     else:
         message = "Please select an option from above."

@@ -6,6 +6,7 @@ import requests
 import config
 import json
 import math
+import logging
 
 
 def check_when_db_updated():
@@ -51,7 +52,7 @@ def create_table(con, name):
         color TEXT, 
         price TEXT, 
         manufacturer TEXT,
-        stock_status TEXT DEFAULT OUTOFSTOCK
+        stock_status TEXT DEFAULT UNKNOWN
         )
         ''')
     con.execute(f"DROP INDEX IF EXISTS {name}_index")
@@ -65,22 +66,20 @@ def initial_db_setup():
     cur.execute('''
         CREATE TABLE tables (
             table_name TEXT,
-            updating TEXT,
             updated_at TEXT,
             next_update_due
             )
             ''')
-    print("tables table created")
-
+    logging.info("Created 'tables' Table")
     update_info = next_update_time()
   
     cur.execute('''
     INSERT INTO tables 
-        (table_name, updating, updated_at, next_update_due)
-        VALUES (?, ?, ?, ?)''', 
-        ("stock", "true", update_info["current_time"], update_info["next_update"]) 
+        (table_name, updated_at, next_update_due)
+        VALUES (?, ?, ?)''', 
+        ("stock", update_info["current_time"], update_info["next_update"]) 
     )
-    print("tables table updated")
+    logging.info("Updated 'tables Table")
 
     con.commit() 
     con.close()
@@ -88,12 +87,10 @@ def initial_db_setup():
 
 
 def get_info_for_table(category):
-
     con = sqlite3.connect('database.db')    
     cur = con.cursor()
     cur.execute("SELECT name, color, price, manufacturer, stock_status FROM stock WHERE type =?", (category,))  
     rows = cur.fetchall();  
-    
     return rows
 
 
@@ -101,14 +98,8 @@ def update_databse():
     new_table_name = "new_table"
     con = sqlite3.connect('database.db')
     create_table(con, new_table_name)
-    print("new table created")
+    logging.info("Created 'new_table' Table")
     cur = con.cursor()
-    cur.execute('''UPDATE "tables"
-        SET updating = "true"
-        WHERE table_name = "stock"
-        ''')
-    print('tables table set to "updating"')
-
     s = requests.Session()
     json_data = get_cateogry(s)
     a = time.perf_counter()
@@ -118,15 +109,16 @@ def update_databse():
             VALUES 
             (? , ?, ?, ?, ?, ?)
     ''', json_data)
-    b = time.perf_counter()
-    print(f"Time took {b - a} seconds")
 
-    con.commit() 
+    b = time.perf_counter()
+    logging.info(f"Stock data received and inserted in: {b - a} seconds")
+
+    con.commit()    
     con.close()
-    print("table updated with main info")
+
     update_stock_count(new_table_name, s)
 
-
+# updates the stock status of products in the database
 def update_stock_count(table_name, session):
     con = sqlite3.connect('database.db')
     cur = con.cursor()
@@ -140,10 +132,6 @@ def update_stock_count(table_name, session):
     #     for x in row
     #         ]
 
-    b = time.perf_counter() 
-
-    print(f"Time for nested list comp took {b - a} seconds")
-
     cur.executemany(f'''
         UPDATE {table_name}
         SET stock_status = ?
@@ -154,13 +142,14 @@ def update_stock_count(table_name, session):
 
     cur.execute(f'''UPDATE "tables"
         SET 
-        updating = "false",
         updated_at = "{update_info["current_time"]}",
         next_update_due = "{update_info["next_update"]}"
 
         WHERE table_name = "stock"
         ''')
 
+    b = time.perf_counter() 
+    logging.info(f"Manufacturer data received and inserted in: {b - a} seconds")
     cur.execute("DROP TABLE IF EXISTS stock")
     cur.execute(f"ALTER TABLE {table_name} RENAME TO stock")
 

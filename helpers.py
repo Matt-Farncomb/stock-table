@@ -3,6 +3,8 @@ import json
 import threading
 import config
 import datetime
+import logging
+import requests 
 
 def parseXML(xml):
     root = et.fromstring(xml)
@@ -10,23 +12,30 @@ def parseXML(xml):
         if child.tag == "INSTOCKVALUE":
             return child.text 
 
-
+# Retrieve JSON from url
+# IF request fails, try again
 def get_json(url_end, session):
-    print(f"retrieving: {url_end}")
 
     url = "https://bad-api-assignment.reaktor.com/v2/" + url_end
     response = session.get(url)
-    # print(url_end)
+
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        logging.warning(e)
+        return False
+
     header = response.headers
-    print(f"retrieved: {url_end}")
-    error_key = "X-Error-Modes-Active"
-    if error_key in header:
+    logging.info(f"retrieved: {url_end}")
+    error_key = "X-Error-Modes-Active"      
+    if header["Content-Length"] == "0":
+        logging.warning(f"Category named '{url_end}' no longer available")
+        return False
+    elif error_key in header:
         if header[error_key] ==  "availability-empty":
-            print(f"Error in accessing {url_end} API. Trying again...")
+            logging.warning(f"Error in accessing {url_end} API. Trying again...")
             return get_json(url_end, session)
-    # print("https://bad-api-assignment.reaktor.com/v2/" + url_end)
     json_data = response.json()
-   
     return json_data
 
 
@@ -58,10 +67,11 @@ def get_cateogry(session):
 
     def get_all_products(product, results):
         products = get_products(product, session)
-        for e in products:
-            config.manufacturers.add(e["manufacturer"])
-            results.append( (e["id"].upper(), e["type"], e["name"], e["color"][0],
-                e["price"], e["manufacturer"]) )
+        if products != False:
+            for e in products:
+                config.manufacturers.add(e["manufacturer"])
+                results.append( (e["id"].upper(), e["type"], e["name"], e["color"][0],
+                    e["price"], e["manufacturer"]) )
 
     return spawn_threads(config.products_required, session, get_all_products)
 
@@ -70,11 +80,13 @@ def get_availability(session):
 
     def get_all_stock(manufacturer, results):
         stock_count = get_stock_count(manufacturer, session)
-        for x in stock_count:
-            results.append((parseXML(x["DATAPAYLOAD"]), x["id"]))
+        if stock_count != False:
+            for x in stock_count:
+                results.append((parseXML(x["DATAPAYLOAD"]), x["id"]))
     
     return spawn_threads(config.manufacturers, session, get_all_stock)
 
+# Return the next time the scheduler will run and how many seconds from now that will be
 def next_update_time():
     current_time = datetime.datetime.now()
     td = datetime.timedelta(minutes=+config.refresh_interval_minutes)
