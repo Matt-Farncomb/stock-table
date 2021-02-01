@@ -9,8 +9,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 logging.info('Starting app...')
 app = Flask(__name__)
-# initial_db_setup()
-# begin_scheduler()
+initial_db_setup()
+begin_scheduler()
 
 import views
 

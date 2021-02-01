@@ -59,7 +59,7 @@ function millisecondsToSeconds(mil) {
 }
 
 // When user has scrolled past approxPageHeight, reveal/hide element.
-// NOTE: USe on elements with 'transparent' class
+// NOTE: Use on elements with 'transparent' class
 function fadeElementOnScroll(element) {
     const elementClasses = document.querySelector(element).classList;
     const approxPageHeight = 700;
