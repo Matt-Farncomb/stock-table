@@ -16,9 +16,12 @@ function initiatePageRefresh() {
     const last_updated = Date.parse(refresh_interval.last_updated);
     const interval = 10000 // 10 seconds
 
+    // const currentURL = `${window.location.hostname}/api`
+    // console.log(currentURL);
+
     setTimeout(() => 
         setInterval(() => 
-                fetch("http://127.0.0.1:8000/api")
+                fetch("/api")
                 .then(response => response.json())
                 .then(dbdatus => {
                     const db_update = Date.parse(dbdatus[0]);
