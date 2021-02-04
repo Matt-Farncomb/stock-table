@@ -1,7 +1,7 @@
 
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from database import initial_db_setup
 from scheduler import begin_scheduler
 import logging

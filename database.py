@@ -7,6 +7,7 @@ import config
 import json
 import math
 import logging
+# from main import db
 
 
 def check_when_db_updated():
