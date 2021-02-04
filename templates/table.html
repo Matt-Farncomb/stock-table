@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {%block head %}
-    <script type="text/javascript" src= "{{ url_for('static',filename='scripts/scripts.js') }}" ></script>
+    <script type="text/javascript" src= "{{ url_for('static',filename='scripts/js/scripts.js') }}" ></script>
     <meta http-equiv="refresh" content="{{ refresh_interval.seconds }}">
     <script type="text/javascript">
-        const refresh_interval = {{ refresh_interval|tojson }} 
+        const refreshInterval = {{ refresh_interval|tojson }} 
      </script>
 {% endblock %}
 {% block body %}

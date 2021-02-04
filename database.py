@@ -14,7 +14,7 @@ def check_when_db_updated():
     cur = con.cursor()
     cur.execute("SELECT updated_at FROM TABLES")  
     row = cur.fetchone()
-    return row
+    return row[0]
 
 # Return a dict containing when the db was last 
 # updatded and how long ago
@@ -41,7 +41,7 @@ def last_updated():
 
     return result
 
-def create_table(con, name):
+def create_stock_table(con, name):
     con.execute(f"DROP TABLE IF EXISTS {name}")
     
     con.execute(f'''
@@ -61,7 +61,7 @@ def create_table(con, name):
 def initial_db_setup():
     con = sqlite3.connect('database.db')
     cur = con.cursor()
-    create_table(con, "stock")
+    create_stock_table(con, "stock")
     cur.execute("DROP TABLE IF EXISTS tables")
     cur.execute('''
         CREATE TABLE tables (
@@ -97,7 +97,7 @@ def get_info_for_table(category):
 def update_databse():
     new_table_name = "new_table"
     con = sqlite3.connect('database.db')
-    create_table(con, new_table_name)
+    create_stock_table(con, new_table_name)
     logging.info("Created 'new_table' Table")
     cur = con.cursor()
     s = requests.Session()
