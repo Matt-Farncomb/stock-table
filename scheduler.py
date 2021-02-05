@@ -9,7 +9,10 @@ def background_db_updater():
     update_databse()
     logging.info('"Database updated')
 
-
+def initial_db_update():
+    sched = BackgroundScheduler(daemon=True)
+    sched.add_job(background_db_updater)
+    sched.start()
 
 def begin_scheduler():
     sched = BackgroundScheduler(daemon=True)

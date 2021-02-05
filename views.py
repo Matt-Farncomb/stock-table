@@ -1,20 +1,19 @@
 from main import app
-# from globals import products_required, table_headings
 import config
 from flask import render_template, jsonify
 from database import get_info_for_table, check_when_db_updated, last_updated
 
 
 # Return when db was last updated
-@app.route('/api')
+@app.route('/api', methods=['GET'])
 def api():
     db_status = check_when_db_updated()
     return(jsonify(db_status))
 
 
 # Return a table containing all the inventory data of <category>
-@app.route('/')
-@app.route('/<category>')
+@app.route('/', methods=['GET'])
+@app.route('/<category>', methods=['GET'])
 def products_table(category=None):
 
     refresh = last_updated()
@@ -24,7 +23,7 @@ def products_table(category=None):
         "refresh_interval": {
             "seconds": refresh["seconds"],
             "minutes": refresh["minutes"],
-            "last_updated": refresh["last_updated"]
+            "previouslyUpdated": refresh["last_updated"]
         }
     } 
     # valid category

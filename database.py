@@ -7,13 +7,12 @@ import config
 import json
 import math
 import logging
-# from main import db
 
-
+# returns a string of the last time the db was updated
 def check_when_db_updated():
     con = sqlite3.connect('database.db')
     cur = con.cursor()
-    cur.execute("SELECT updated_at FROM TABLES")  
+    cur.execute("SELECT updated_at FROM status")  
     row = cur.fetchone()
     return row[0]
 
@@ -23,7 +22,7 @@ def last_updated():
     con = sqlite3.connect('database.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("SELECT updated_at, next_update_due FROM TABLES")  
+    cur.execute("SELECT updated_at, next_update_due FROM status")  
     row = cur.fetchone()
 
     next_update_due = row["next_update_due"]
@@ -42,51 +41,52 @@ def last_updated():
 
     return result
 
-def create_stock_table(con, name):
-    con.execute(f"DROP TABLE IF EXISTS {name}")
+# Create stock table and an index for it
+def create_stock_table(con):
+    con.execute("DROP TABLE IF EXISTS stock")
     
-    con.execute(f'''
-    CREATE TABLE "{name}" (
+    con.execute('''
+    CREATE TABLE stock (
         id TEXT, 
         type TEXT, 
         name TEXT, 
         color TEXT, 
         price TEXT, 
         manufacturer TEXT,
-        stock_status TEXT DEFAULT UNKNOWN
+        stock_status TEXT DEFAULT 'REQUESTING...'
         )
         ''')
-    con.execute(f"DROP INDEX IF EXISTS {name}_index")
-    con.execute(f"CREATE INDEX {name}_index ON {name} (id)")
+    con.execute("DROP INDEX IF EXISTS stock_index")
+    con.execute("CREATE INDEX stock_index ON stock (id)")
 
-def initial_db_setup():
+# create status table to store update times
+def create_status_table():
     con = sqlite3.connect('database.db')
     cur = con.cursor()
-    create_stock_table(con, "stock")
-    cur.execute("DROP TABLE IF EXISTS tables")
+    cur.execute("DROP TABLE IF EXISTS status")
     cur.execute('''
-        CREATE TABLE tables (
-            table_name TEXT,
+        CREATE TABLE status (
             updated_at TEXT,
-            next_update_due
+            next_update_due TEXT
             )
-            ''')
-    logging.info("Created 'tables' Table")
+        ''')
+    logging.info("Created 'status' Table")
     update_info = next_update_time()
   
     cur.execute('''
-    INSERT INTO tables 
-        (table_name, updated_at, next_update_due)
-        VALUES (?, ?, ?)''', 
-        ("stock", update_info["current_time"], update_info["next_update"]) 
+    INSERT INTO status 
+        (updated_at, next_update_due)
+        VALUES (?, ?)''', 
+        (update_info["current_time"], update_info["next_update"]) 
     )
-    logging.info("Updated 'tables Table")
+    logging.info("Updated 'status' Table")
 
     con.commit() 
     con.close()
-    update_databse()
 
+    logging.info("Set up complete")
 
+# return row from stock table of type category
 def get_info_for_table(category):
     con = sqlite3.connect('database.db')    
     cur = con.cursor()
@@ -94,19 +94,18 @@ def get_info_for_table(category):
     rows = cur.fetchall();  
     return rows
 
-
+# replace old stock table and insert new data retrieved from api
 def update_databse():
-    new_table_name = "new_table"
     con = sqlite3.connect('database.db')
-    create_stock_table(con, new_table_name)
-    logging.info("Created 'new_table' Table")
+    create_stock_table(con)
+    logging.info("Created 'stock' Table")
     cur = con.cursor()
     s = requests.Session()
     json_data = get_cateogry(s)
     a = time.perf_counter()
 
     cur.executemany(f'''
-            INSERT INTO "{new_table_name}" (id, type, name, color, price, manufacturer)
+            INSERT INTO "stock" (id, type, name, color, price, manufacturer)
             VALUES 
             (? , ?, ?, ?, ?, ?)
     ''', json_data)
@@ -117,10 +116,10 @@ def update_databse():
     con.commit()    
     con.close()
 
-    update_stock_count(new_table_name, s)
+    update_stock_count(s)
 
 # updates the stock status of products in the database
-def update_stock_count(table_name, session):
+def update_stock_count(session):
     con = sqlite3.connect('database.db')
     cur = con.cursor()
 
@@ -128,31 +127,21 @@ def update_stock_count(table_name, session):
 
     xml_data = get_availability(session)
 
-    # xml_data = [(parseXML(x["DATAPAYLOAD"]), x["id"]) 
-    # for row in get_stock_count2(manufacturers, s)
-    #     for x in row
-    #         ]
-
-    cur.executemany(f'''
-        UPDATE {table_name}
+    cur.executemany('''
+        UPDATE stock
         SET stock_status = ?
         WHERE id = ?
         ''', xml_data) 
 
     update_info = next_update_time()
 
-    cur.execute(f'''UPDATE "tables"
-        SET 
-        updated_at = "{update_info["current_time"]}",
-        next_update_due = "{update_info["next_update"]}"
-
-        WHERE table_name = "stock"
-        ''')
+    cur.execute('''UPDATE status
+        SET updated_at = ?, next_update_due = ?''',
+        (update_info["current_time"], update_info["next_update"])
+    )
 
     b = time.perf_counter() 
     logging.info(f"Manufacturer data received and inserted in: {b - a} seconds")
-    cur.execute("DROP TABLE IF EXISTS stock")
-    cur.execute(f"ALTER TABLE {table_name} RENAME TO stock")
 
     con.commit() 
     con.close()

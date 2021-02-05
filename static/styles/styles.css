@@ -108,7 +108,7 @@ tr:nth-child(2n) {
 td {
     box-sizing: border-box;
     padding-left: 1em;
-    padding: .5em 0 .5em 1em;
+    padding: .5em 1em .5em 1em;
 }
 
 tbody tr:first-child td {
@@ -152,7 +152,6 @@ footer a {
     opacity: 0.75;
 }
 
-
 #error-404 h1 {
     font-size: 6em;
     margin-bottom: .25em;
@@ -186,8 +185,6 @@ footer a {
 #error-404 nav a:not(:last-child) {
     border-right:.15em solid var(--table-row);
 }
-
-.no-js {}
 
 #refresh-notification {
     font-family: sans-serif;

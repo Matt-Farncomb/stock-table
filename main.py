@@ -1,20 +1,18 @@
 
 
 from flask import Flask
-# from flask_sqlalchemy import SQLAlchemy
-from database import initial_db_setup
-from scheduler import begin_scheduler
+from database import create_status_table, update_databse
+from scheduler import begin_scheduler, initial_db_update
 import logging
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.DEBUG)
 
 logging.info('Starting app...')
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:database.db'
-# db = SQLAlchemy(app)
 
-initial_db_setup()
+create_status_table()
+initial_db_update()
 begin_scheduler()
 
 import views

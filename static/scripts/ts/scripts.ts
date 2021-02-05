@@ -12,8 +12,10 @@ window.onload = () => {
     // will stop the refresh initiated by the HTML when js not disabled
     window.stop();
     
-    startCountdown(); 
-    initiatePageRefresh();
+    const p: HTMLParagraphElement = document.querySelector("#refresh-notification p");
+
+    startCountdown(p); 
+    initiatePageRefresh(p);
     fadeElementOnScroll("footer");               
 }
 
@@ -21,7 +23,7 @@ window.onload = () => {
 // poll the server every 10 seconds to see
 // if update is complete then refresh
 // when update is complete.
-function initiatePageRefresh(): void {
+function initiatePageRefresh(p): void {
     // refresh_interval comes from the server (is in table.html)
     const previouslyUpdated: number = Date.parse(refreshInterval.previouslyUpdated);
     const interval = 10000 // 10 seconds
@@ -31,8 +33,10 @@ function initiatePageRefresh(): void {
                 fetch("/api")
                 .then(response => response.json())
                 .then(datetimeFromDB => {
+                    p.innerText = "Page data now out of date. Standby for refresh";
                     const mostRecentUpdate: number = Date.parse(datetimeFromDB);
                     if (mostRecentUpdate > previouslyUpdated) { 
+                        console.log("reloading");
                         location.reload();
                     }
                 }), 
@@ -43,9 +47,9 @@ function initiatePageRefresh(): void {
 // Update counter at top of page to inform
 // user when update is complete and
 // the page will refresh.
-function startCountdown(): void {
+function startCountdown(p): void {
 
-    const p: HTMLParagraphElement = document.querySelector("#refresh-notification p");
+    // const p: HTMLParagraphElement = document.querySelector("#refresh-notification p");
     const refreshCountdown = p.querySelector("span");
     // refresh_interval comes from the server (is in table.html)
     let displayedMinutes = refreshInterval.minutes;
