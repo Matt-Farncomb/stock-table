@@ -10,8 +10,8 @@ A simple site to view inventory information for a fictional warehouse. It follow
 
 * python 3.6
 * flask
-* sqlite
-* javascript
+* sqlite3
+* typescript
 
 ## Usage
 The vast majority of logic was handled in the python backend. In fact, JavaScipt is not even needed for this app to function and is used simply to have an interface that is more informative and to force a refresh on the browser  once the backend has finished updating, rather than at the interval set in `base.html`

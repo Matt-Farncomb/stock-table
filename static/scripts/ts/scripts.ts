@@ -5,7 +5,7 @@ interface serverRefreshObj {
     previouslyUpdated: string; //datetime string
   }
 
-// refreshInterval comes from the server  and is in table.html)
+// refreshInterval comes from the server and is in table.html
 declare var refreshInterval: serverRefreshObj;
 
 window.onload = () => {
@@ -21,7 +21,7 @@ window.onload = () => {
 
 // When the DB is due to start updating,
 // poll the server every 10 seconds to see
-// if update is complete then refresh
+// if update is complete then refresh page
 // when update is complete.
 function initiatePageRefresh(p): void {
     // refresh_interval comes from the server (is in table.html)
@@ -33,10 +33,8 @@ function initiatePageRefresh(p): void {
                 fetch("/api")
                 .then(response => response.json())
                 .then(datetimeFromDB => {
-                    p.innerText = "Page data now out of date. Standby for refresh";
                     const mostRecentUpdate: number = Date.parse(datetimeFromDB);
                     if (mostRecentUpdate > previouslyUpdated) { 
-                        console.log("reloading");
                         location.reload();
                     }
                 }), 
@@ -49,7 +47,6 @@ function initiatePageRefresh(p): void {
 // the page will refresh.
 function startCountdown(p): void {
 
-    // const p: HTMLParagraphElement = document.querySelector("#refresh-notification p");
     const refreshCountdown = p.querySelector("span");
     // refresh_interval comes from the server (is in table.html)
     let displayedMinutes = refreshInterval.minutes;
